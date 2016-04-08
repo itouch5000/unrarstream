@@ -546,10 +546,10 @@ void File::Prealloc(int64 Size)
   }
 #endif
 
-#if defined(_UNIX) && defined(USE_FALLOCATE)
+#if defined(_UNIX)
   // fallocate is rather new call. Only latest kernels support it.
   // So we are not using it by default yet.
-  int fd = GetFD(hFile);
+  int fd = GetFD();
   if (fd >= 0)
     fallocate(fd, 0, 0, Size);
 #endif
