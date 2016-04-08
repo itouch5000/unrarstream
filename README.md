@@ -1,4 +1,4 @@
-unrar
+unrarstream
 =====
 
 Adds a new option to wait for the next volume to appear. This is usefull when downloading a large rar archive that has been splitted into multiple parts.
