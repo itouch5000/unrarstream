@@ -178,7 +178,7 @@ bool File::Create(const wchar *Name,uint Mode)
   // So we detect such names and process them with \\?\ prefix.
   wchar *LastChar=PointToLastChar(Name);
   bool Special=*LastChar=='.' || *LastChar==' ';
-  
+
   if (Special)
     hFile=FILE_BAD_HANDLE;
   else
@@ -546,7 +546,7 @@ void File::Prealloc(int64 Size)
   }
 #endif
 
-#if defined(_UNIX) && defined(USE_FALLOCATE)
+#if defined(_UNIX)
   // fallocate is rather new call. Only latest kernels support it.
   // So we are not using it by default yet.
   int fd = GetFD();
