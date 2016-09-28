@@ -130,7 +130,7 @@ void CommandData::ParseArg(wchar *Arg)
           {
             FindData FileData;
             bool Found=FindFile::FastFind(Arg,&FileData);
-            if ((!Found || ListMode==RCLM_ACCEPT_LISTS) && 
+            if ((!Found || ListMode==RCLM_ACCEPT_LISTS) &&
                 ListMode!=RCLM_REJECT_LISTS && *Arg=='@' && !IsWildcard(Arg))
             {
               FileLists=true;
@@ -866,6 +866,20 @@ void CommandData::ProcessSwitch(const wchar *Switch)
         case 'P':
           VolumePause=true;
           break;
+        case 'A':
+          if (toupperw(Switch[2])=='P')
+          {
+            VolumeAutoPause=true;
+            if (IsDigit(Switch[3]))
+            {
+              VolumeAutoPauseInterval=atoiw(Switch+3);
+            }
+            else
+            {
+              VolumeAutoPauseInterval=5;
+            }
+          }
+          break;
         case 'E':
           if (toupperw(Switch[2])=='R')
             VersionControl=atoiw(Switch+3)+1;
@@ -992,8 +1006,8 @@ void CommandData::OutHelp(RAR_EXIT ExitCode)
     MCHelpSwO,MCHelpSwOC,MCHelpSwOL,MCHelpSwOR,MCHelpSwOW,MCHelpSwP,
     MCHelpSwPm,MCHelpSwR,MCHelpSwRI,MCHelpSwSC,MCHelpSwSL,MCHelpSwSM,
     MCHelpSwTA,MCHelpSwTB,MCHelpSwTN,MCHelpSwTO,MCHelpSwTS,MCHelpSwU,
-    MCHelpSwVUnr,MCHelpSwVER,MCHelpSwVP,MCHelpSwX,MCHelpSwXa,MCHelpSwXal,
-    MCHelpSwY
+    MCHelpSwVUnr,MCHelpSwVER,MCHelpSwVP,MCHelpSwVAP,MCHelpSwX,MCHelpSwXa,
+    MCHelpSwXal,MCHelpSwY
 #else
 #endif
   };
@@ -1077,7 +1091,7 @@ bool CommandData::CheckArgs(StringList *Args,bool Dir,const wchar *CheckName,boo
       {
         // We process the directory and have the directory exclusion mask.
         // So let's convert "mask\" to "mask" and process it normally.
-        
+
         *LastMaskChar=0;
       }
       else
@@ -1085,7 +1099,7 @@ bool CommandData::CheckArgs(StringList *Args,bool Dir,const wchar *CheckName,boo
         // REMOVED, we want -npath\* to match empty folders too.
         // If mask has wildcards in name part and does not have the trailing
         // '\' character, we cannot use it for directories.
-      
+
         // if (IsWildcard(PointToName(CurMask)))
         //  continue;
       }

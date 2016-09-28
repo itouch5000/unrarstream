@@ -18,9 +18,9 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
 
   if (DataIO!=NULL && SplitHeader)
   {
-    bool PackedHashPresent=Arc.Format==RARFMT50 || 
+    bool PackedHashPresent=Arc.Format==RARFMT50 ||
          hd->UnpVer>=20 && hd->FileHash.CRC32!=0xffffffff;
-    if (PackedHashPresent && 
+    if (PackedHashPresent &&
         !DataIO->PackedDataHash.Cmp(&hd->FileHash,hd->UseHashKey ? hd->HashKey:NULL))
       uiMsg(UIERROR_CHECKSUMPACKED, Arc.FileName, hd->FileName);
   }
@@ -50,6 +50,11 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
     FailedOpen=true;
 #endif
 
+  if (Cmd->VolumeAutoPause)
+  {
+    WaitNextVol(NextName,Cmd->VolumeAutoPauseInterval);
+  }
+
   uint OpenMode = Cmd->OpenShared ? FMF_OPENSHARED : 0;
 
   if (!FailedOpen)
@@ -57,7 +62,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
     {
       // We need to open a new volume which size was not calculated
       // in total size before, so we cannot calculate the total progress
-      // anymore. Let's reset the total size to zero and stop 
+      // anymore. Let's reset the total size to zero and stop
       // the total progress.
       if (DataIO!=NULL)
         DataIO->TotalArcSize=0;
@@ -110,7 +115,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
 
 #endif // RARDLL
     }
-  
+
   if (FailedOpen)
   {
     uiMsg(UIERROR_MISSINGVOL,NextName);
@@ -158,7 +163,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
 #ifdef SFX_MODULE
     DataIO->UnpArcSize=Arc.FileLength();
 #endif
-    
+
     // Reset the size of packed data read from current volume. It is used
     // to display the total progress and preceding volumes are already
     // compensated with ProcessedArcSize, so we need to reset this variable.
@@ -170,6 +175,23 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
 }
 
 
+void WaitNextVol(wchar *ArcName,uint Interval)
+{
+    eprintf(St(MWaitNextVol),ArcName);
+    while (!FileExist(ArcName))
+    {
+      sleep(Interval);
+    }
+    File *ArcFile=new File();
+    ArcFile->Open(ArcName,FMF_READ);
+    int64 ArcFileLastSize=0, ArcFileSize=1;
+    while (ArcFileSize!=ArcFileLastSize)
+    {
+      ArcFileLastSize=ArcFileSize;
+      sleep(Interval);
+      ArcFileSize=ArcFile->FileLength();
+    }
+}
 
 
 

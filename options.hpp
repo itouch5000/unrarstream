@@ -32,7 +32,7 @@ enum {NAMES_ORIGINALCASE=0,NAMES_UPPERCASE,NAMES_LOWERCASE};
 
 enum MESSAGE_TYPE {MSG_STDOUT=0,MSG_STDERR,MSG_ERRONLY,MSG_NULL};
 
-enum RECURSE_MODE 
+enum RECURSE_MODE
 {
   RECURSE_NONE=0,    // no recurse switches
   RECURSE_DISABLE,   // switch -r-
@@ -40,7 +40,7 @@ enum RECURSE_MODE
   RECURSE_WILDCARDS, // switch -r0
 };
 
-enum OVERWRITE_MODE 
+enum OVERWRITE_MODE
 {
   OVERWRITE_DEFAULT=0, // Ask when extracting, silently overwrite when archiving.
   OVERWRITE_ALL,
@@ -100,7 +100,7 @@ class RAROptions
     wchar ArcPath[NM];
     SecPassword Password;
     bool EncryptHeaders;
-    
+
     bool ManualPassword; // Password entered manually during operation, might need to clean for next archive.
 
     wchar LogName[NM];
@@ -162,6 +162,8 @@ class RAROptions
     bool Lock;
     bool Test;
     bool VolumePause;
+    bool VolumeAutoPause;
+    uint VolumeAutoPauseInterval;
     FilterMode FilterModes[MAX_FILTER_TYPES];
     wchar EmailTo[NM];
     uint VersionControl;
