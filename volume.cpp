@@ -50,11 +50,6 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
     FailedOpen=true;
 #endif
 
-	if (Cmd->VolumeAutoPause)
-  {
-      WaitNextVol(NextName,Cmd->VolumeAutoPauseInterval);
-  }
-
   uint OpenMode = Cmd->OpenShared ? FMF_OPENSHARED : 0;
 
   if (!FailedOpen)
@@ -175,23 +170,7 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,wchar Comma
 }
 
 
-void WaitNextVol(wchar *ArcName,uint Interval)
-{
-    eprintf(St(MWaitNextVol),ArcName);
-    while (!FileExist(ArcName))
-    {
-        sleep(Interval);
-    }
-    File *ArcFile=new File();
-    ArcFile->Open(ArcName,FMF_READ);
-    int64 ArcFileLastSize=0, ArcFileSize=1;
-    while (ArcFileSize!=ArcFileLastSize)
-    {
-        ArcFileLastSize=ArcFileSize;
-        sleep(Interval);
-        ArcFileSize=ArcFile->FileLength();
-    }
-}
+
 
 
 

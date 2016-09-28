@@ -114,6 +114,7 @@ class RAROptions
     bool DisablePercentage;
     bool DisableCopyright;
     bool DisableDone;
+    bool PrintVersion;
     int Solid;
     int SolidCount;
     bool ClearArc;
@@ -140,6 +141,10 @@ class RAROptions
     bool OpenShared;
     bool DeleteFiles;
 
+#ifdef _WIN_ALL
+    bool AllowIncompatNames; // Allow names with trailing dots and spaces.
+#endif
+
 
 #ifndef SFX_MODULE
     bool GenerateArcName;
@@ -157,8 +162,6 @@ class RAROptions
     bool Lock;
     bool Test;
     bool VolumePause;
-		bool VolumeAutoPause;
-		uint VolumeAutoPauseInterval;
     FilterMode FilterModes[MAX_FILTER_TYPES];
     wchar EmailTo[NM];
     uint VersionControl;
